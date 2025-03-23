@@ -187,7 +187,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   dropChance: 1
-  minDrops: 0
+  minDrops: 1
   maxDrops: 1
   dropRadius: 1
   dropHeight: 0.5
