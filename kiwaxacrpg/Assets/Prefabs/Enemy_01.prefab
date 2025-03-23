@@ -169,6 +169,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   damageAmount: 10
-  damageCooldown: 2
+  damageCooldown: 0.25
   requireHitboxTag: 1
   hitboxTag: PlayerHitbox

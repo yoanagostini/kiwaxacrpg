@@ -9,8 +9,8 @@ using System.Collections;
 public class PlayerHealth : MonoBehaviour
 {
     [Header("Health Settings")]
-    [Tooltip("Maximum health of the player")]
-    public float maxHealth = 100f;
+    [Tooltip("Maximum health of the player - pulled from WarriorClass")]
+    private float maxHealth = 100f;
     
     [Tooltip("Current health of the player")]
     private float currentHealth;
@@ -24,13 +24,6 @@ public class PlayerHealth : MonoBehaviour
     
     [Tooltip("Sound to play when player takes damage")]
     public AudioClip damageSound;
-    
-    [Header("UI References")]
-    [Tooltip("Reference to health bar UI element")]
-    public Image healthBarImage;
-    
-    [Tooltip("Text to display health value")]
-    public Text healthText;
     
     // Flag to track if player is currently invincible
     private bool isInvincible = false;
@@ -72,59 +65,72 @@ public class PlayerHealth : MonoBehaviour
         if (playerController == null)
         {
             Debug.LogWarning("PlayerHealth could not find a PlayerController component!");
+            maxHealth = 100f; // Fallback default if no controller found
+            currentHealth = maxHealth;
         }
         else
         {
-            // Get the health value from the player controller's stats if available
+            // Get the health values from the player controller's stats
             try
             {
-                // Try to get Health stat from controller
-                float controllerHealth = playerController.GetStat("Health");
-                if (controllerHealth > 0)
-                {
-                    // Use the health value from the controller
-                    maxHealth = controllerHealth;
-                    currentHealth = maxHealth;
-                    Debug.Log($"Initialized player health from PlayerController stats: {maxHealth}");
-                }
+                // Try to get MaxHealth stat from controller first
+                maxHealth = playerController.GetStat("MaxHealth");
                 
-                // Try to set MaxHealth stat if it doesn't exist
-                try {
-                    playerController.SetStat("MaxHealth", maxHealth);
-                } catch (System.Exception) {
-                    // It's okay if this fails
+                // If MaxHealth exists, use it
+                if (maxHealth > 0)
+                {
+                    Debug.Log($"Retrieved MaxHealth from WarriorClass: {maxHealth}");
+                    
+                    // Get current health from controller too
+                    try {
+                        currentHealth = playerController.GetStat("Health");
+                        Debug.Log($"Retrieved current Health from WarriorClass: {currentHealth}");
+                    }
+                    catch (System.Exception) {
+                        // If we can't get current health, use max health
+                        currentHealth = maxHealth;
+                        Debug.Log($"Using MaxHealth as current health: {currentHealth}");
+                    }
+                }
+                else
+                {
+                    // If MaxHealth is invalid, try Health stat instead
+                    Debug.LogWarning("MaxHealth stat was invalid, trying Health stat instead");
+                    float health = playerController.GetStat("Health");
+                    
+                    if (health > 0)
+                    {
+                        maxHealth = health;
+                        currentHealth = maxHealth;
+                        Debug.Log($"Using Health stat as MaxHealth: {maxHealth}");
+                    }
+                    else
+                    {
+                        // If both fail, use default
+                        maxHealth = 100f;
+                        currentHealth = maxHealth;
+                        Debug.LogWarning($"Could not get valid health values from controller, using default: {maxHealth}");
+                    }
                 }
             }
             catch (System.Exception e)
             {
-                Debug.LogWarning($"Could not get Health stat from PlayerController: {e.Message}. Using default value: {maxHealth}");
-                
-                // Fall back to default values
+                // Fallback to default values if stat retrieval fails
+                maxHealth = 100f;
                 currentHealth = maxHealth;
+                Debug.LogWarning($"Could not get health stats from PlayerController: {e.Message}. Using default value: {maxHealth}");
             }
         }
-        
-        // Update UI if available
-        UpdateHealthUI();
         
         // Initialization complete
         isInitialized = true;
     }
     
-    // Update health bar UI
+    // Update health bar UI - Empty placeholder method
     void UpdateHealthUI()
     {
-        // Update health bar fill amount if reference exists
-        if (healthBarImage != null)
-        {
-            healthBarImage.fillAmount = currentHealth / maxHealth;
-        }
-        
-        // Update health text if reference exists
-        if (healthText != null)
-        {
-            healthText.text = $"{Mathf.Ceil(currentHealth)}/{maxHealth}";
-        }
+        // No longer needed - HealthUI handles this now
+        // This method is kept empty for compatibility with any existing calls
     }
     
     // Public method to take damage - can be called by enemies or other damage sources
@@ -132,10 +138,15 @@ public class PlayerHealth : MonoBehaviour
     {
         // If player is invincible, ignore damage
         if (isInvincible)
+        {
+            Debug.Log($"Player is invincible, ignored {damageAmount} damage");
             return;
+        }
             
-        // Apply damage
+        // Apply damage - log before and after health for debugging
+        float healthBefore = currentHealth;
         currentHealth -= damageAmount;
+        float healthAfter = currentHealth;
         
         // Clamp health to prevent negative values
         currentHealth = Mathf.Max(0, currentHealth);
@@ -152,9 +163,6 @@ public class PlayerHealth : MonoBehaviour
                 Debug.LogWarning($"Could not set Health stat on PlayerController: {e.Message}");
             }
         }
-        
-        // Update UI
-        UpdateHealthUI();
         
         // Play damage sound if available
         if (audioSource != null && damageSound != null)
@@ -173,7 +181,8 @@ public class PlayerHealth : MonoBehaviour
             StartCoroutine(InvincibilityCoroutine());
         }
         
-        Debug.Log($"Player took {damageAmount} damage. Current health: {currentHealth}");
+        // Detailed logging to diagnose multiple enemy damage issue
+        Debug.Log($"Player took {damageAmount} damage from source {System.Environment.StackTrace.Substring(0, 100)}... Health: {healthBefore} -> {healthAfter}");
     }
     
     // Coroutine for temporary invincibility after taking damage
@@ -181,6 +190,7 @@ public class PlayerHealth : MonoBehaviour
     {
         // Set invincible flag
         isInvincible = true;
+        Debug.Log("Player invincibility started");
         
         // Show invincibility effect if available
         if (invincibilityEffect != null)
@@ -216,6 +226,7 @@ public class PlayerHealth : MonoBehaviour
         
         // Reset invincible flag
         isInvincible = false;
+        Debug.Log("Player invincibility ended");
     }
     
     // Public method to heal the player
@@ -239,9 +250,6 @@ public class PlayerHealth : MonoBehaviour
                 Debug.LogWarning($"Could not set Health stat on PlayerController: {e.Message}");
             }
         }
-        
-        // Update UI
-        UpdateHealthUI();
         
         Debug.Log($"Player healed for {healAmount}. Current health: {currentHealth}");
     }

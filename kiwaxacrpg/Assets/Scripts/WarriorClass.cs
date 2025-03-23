@@ -102,8 +102,8 @@ public class WarriorClass : PlayerController
     private void InitializeWarriorStats()
     {
         // Override some base stats for warrior
-        SetStat("Health", 150f); // Warriors have more health
-        SetStat("MaxHealth", 150f);
+        SetStat("Health", 500f); // Warriors have more health
+        SetStat("MaxHealth", 500f);
         SetStat("Mana", 30f);    // Warriors have less mana
         SetStat("Strength", 15f); // Warriors have more strength
         

@@ -185,8 +185,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e76da904c9e10b04d8bce826d16ff203, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHealth: 150
-  invincibilityTime: 1
+  maxHealth: 500
+  invincibilityTime: 0
   invincibilityEffect: {fileID: 0}
   damageSound: {fileID: 8300000, guid: b6a0e6bb85ef9b146a16ab5862c26fc0, type: 3}
   healthBarImage: {fileID: 0}
