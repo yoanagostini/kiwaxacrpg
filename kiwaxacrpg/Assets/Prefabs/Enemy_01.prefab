@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 3514871943507266712}
   - component: {fileID: 4693393685719199204}
   - component: {fileID: 3316814394142708306}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Enemy_01
   m_TagString: Enemy
   m_Icon: {fileID: 0}
@@ -155,6 +155,8 @@ MonoBehaviour:
   moveSpeed: 3
   rotationSpeed: 5
   stoppingDistance: 1.5
+  minEnemyDistance: 1.5
+  enemyInteraction: 1
   maxHealth: 50
 --- !u!114 &3316814394142708306
 MonoBehaviour:
@@ -172,3 +174,4 @@ MonoBehaviour:
   damageCooldown: 0.25
   requireHitboxTag: 1
   hitboxTag: PlayerHitbox
+  debugMode: 1

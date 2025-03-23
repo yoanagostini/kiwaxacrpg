@@ -1,9 +1,7 @@
 using UnityEngine;
 
 // BasicEnemy.cs
-// This script provides basic enemy behavior - follow the player
-// Implements the abstract EnemyBase class used by the combat system
-
+// Simple enemy that follows the player - reverted to basic functionality
 public class BasicEnemy : EnemyBase
 {
     [Header("Movement Settings")]
@@ -14,7 +12,7 @@ public class BasicEnemy : EnemyBase
     public float rotationSpeed = 5f;
     
     [Tooltip("Distance at which the enemy stops approaching the player")]
-    public float stoppingDistance = 1.5f;
+    public float stoppingDistance = 2.5f;
     
     [Header("Stats")]
     [Tooltip("Enemy's maximum health")]
@@ -33,7 +31,7 @@ public class BasicEnemy : EnemyBase
     void Start()
     {
         // Find the player by tag
-        GameObject player = GameObject.FindGameObjectWithTag("Player");
+        GameObject player = GameObject.FindWithTag("Player");
         if (player != null)
         {
             playerTransform = player.transform;
@@ -88,6 +86,15 @@ public class BasicEnemy : EnemyBase
         {
             // Stop moving when close enough
             rb.linearVelocity = Vector3.zero;
+            
+            // Keep facing the player
+            Vector3 lookDirection = playerTransform.position - transform.position;
+            lookDirection.y = 0;
+            if (lookDirection != Vector3.zero)
+            {
+                Quaternion targetRotation = Quaternion.LookRotation(lookDirection);
+                transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
+            }
         }
     }
     
