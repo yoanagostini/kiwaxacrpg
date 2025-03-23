@@ -28,50 +28,23 @@ public class HealthUI : MonoBehaviour
         // If no player health is assigned, try to find it
         if (playerHealth == null)
         {
-            Debug.Log("No PlayerHealth assigned, searching for one...");
             playerHealth = Object.FindFirstObjectByType<PlayerHealth>();
-            
-            if (playerHealth == null)
-            {
-                Debug.LogError("ERROR: No PlayerHealth component found in the scene!");
-            }
-            else
-            {
-                Debug.Log("Found PlayerHealth component on: " + playerHealth.gameObject.name);
-            }
-        }
-        else
-        {
-            Debug.Log("PlayerHealth already assigned to: " + playerHealth.gameObject.name);
         }
         
         // Try to get player controller if available
         if (playerHealth != null)
         {
             playerController = playerHealth.GetComponent<PlayerController>();
-            if (playerController != null)
-            {
-                Debug.Log("Found PlayerController component");
-            }
-            else
-            {
-                Debug.Log("No PlayerController found on the same object as PlayerHealth");
-            }
         }
         
         // Check UI references
-        if (healthBarSlider == null)
-        {
-            Debug.LogError("ERROR: No health bar slider assigned!");
-        }
-        else
+        if (healthBarSlider != null)
         {
             // Set the health bar color to red
             Image fillImage = healthBarSlider.fillRect.GetComponent<Image>();
             if (fillImage != null)
             {
                 fillImage.color = barColor;
-                Debug.Log("Set health bar to red color at initialization");
             }
         }
         
@@ -102,14 +75,11 @@ public class HealthUI : MonoBehaviour
                 try {
                     currentHealth = playerController.GetStat("Health");
                     maxHealth = playerController.GetStat("MaxHealth");
-                    Debug.Log($"From PlayerController: Health = {currentHealth}/{maxHealth}");
                 }
-                catch (System.Exception e) {
+                catch (System.Exception) {
                     // Fall back to PlayerHealth if PlayerController fails
-                    Debug.LogWarning($"Error getting health from PlayerController: {e.Message}");
                     currentHealth = playerHealth.GetCurrentHealth();
                     maxHealth = playerHealth.GetMaxHealth();
-                    Debug.Log($"Fallback from PlayerHealth: Health = {currentHealth}/{maxHealth}");
                 }
             }
             else
@@ -117,13 +87,11 @@ public class HealthUI : MonoBehaviour
                 // Get values directly from PlayerHealth
                 currentHealth = playerHealth.GetCurrentHealth();
                 maxHealth = playerHealth.GetMaxHealth();
-                Debug.Log($"Directly from PlayerHealth: Health = {currentHealth}/{maxHealth}");
             }
             
             // Prevent division by zero
             if (maxHealth <= 0)
             {
-                Debug.LogError("ERROR: MaxHealth is zero or negative!");
                 maxHealth = 100f; // Use default to avoid errors
             }
             
@@ -133,9 +101,7 @@ public class HealthUI : MonoBehaviour
             // Update the health bar slider if available
             if (healthBarSlider != null)
             {
-                float oldValue = healthBarSlider.value;
                 healthBarSlider.value = healthPercentage;
-                Debug.Log($"Setting health bar slider to: {healthPercentage} (was: {oldValue})");
                 
                 // Keep the fill image red
                 Image fillImage = healthBarSlider.fillRect.GetComponent<Image>();
@@ -144,20 +110,12 @@ public class HealthUI : MonoBehaviour
                     fillImage.color = barColor;
                 }
             }
-            else
-            {
-                Debug.LogError("ERROR: healthBarSlider is null when trying to update!");
-            }
             
             // Update health text if available
             if (healthText != null)
             {
                 healthText.text = $"{Mathf.Ceil(currentHealth)} / {maxHealth}";
             }
-        }
-        else
-        {
-            Debug.LogError("ERROR: playerHealth is null when trying to update UI!");
         }
     }
 }

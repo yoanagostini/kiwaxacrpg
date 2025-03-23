@@ -1,7 +1,7 @@
 using UnityEngine;
 
 // BasicEnemy.cs
-// Simple enemy that follows the player - reverted to basic functionality
+// Simple enemy that follows the player and drops items on death
 public class BasicEnemy : EnemyBase
 {
     [Header("Movement Settings")]
@@ -27,6 +27,9 @@ public class BasicEnemy : EnemyBase
     // Reference to the enemy's Rigidbody component
     private Rigidbody rb;
     
+    // Reference to drop system component
+    private EnemyDropSystem dropSystem;
+    
     // Start is called before the first frame update
     void Start()
     {
@@ -36,13 +39,18 @@ public class BasicEnemy : EnemyBase
         {
             playerTransform = player.transform;
         }
-        else
-        {
-            Debug.LogError("Player not found! Make sure the player has the 'Player' tag assigned.");
-        }
         
         // Get the Rigidbody component
         rb = GetComponent<Rigidbody>();
+        
+        // Get the drop system component
+        dropSystem = GetComponent<EnemyDropSystem>();
+        
+        // If no drop system, add one with default values
+        if (dropSystem == null)
+        {
+            dropSystem = gameObject.AddComponent<EnemyDropSystem>();
+        }
         
         // Initialize health
         currentHealth = maxHealth;
@@ -103,8 +111,6 @@ public class BasicEnemy : EnemyBase
     {
         currentHealth -= damage;
         
-        Debug.Log($"Enemy took {damage} damage. Current health: {currentHealth}");
-        
         // Check if the enemy is dead
         if (currentHealth <= 0)
         {
@@ -115,7 +121,11 @@ public class BasicEnemy : EnemyBase
     // Handle enemy death
     private void Die()
     {
-        Debug.Log("Enemy died!");
+        // Drop loot if we have a drop system
+        if (dropSystem != null)
+        {
+            dropSystem.DropLoot(transform.position);
+        }
         
         // Here you could spawn particles, play sound effects, etc.
         

@@ -23,7 +23,7 @@ public class EnemyDamageDealer : MonoBehaviour
     
     [Header("Debug")]
     [Tooltip("Enable verbose debug messages")]
-    public bool debugMode = true;
+    public bool debugMode = false;
     
     // For tracking this enemy's cooldown
     private bool canDealDamage = true;
@@ -37,11 +37,6 @@ public class EnemyDamageDealer : MonoBehaviour
     {
         // Make sure this enemy has a unique instance ID
         name = name + "_" + GetInstanceID();
-        
-        if (debugMode)
-        {
-            Debug.Log($"Enemy {name} initialized with damage: {damageAmount}, cooldown: {damageCooldown}");
-        }
     }
     
     void Update()
@@ -78,7 +73,6 @@ public class EnemyDamageDealer : MonoBehaviour
         if (IsPlayerObject(collision.gameObject))
         {
             inContactWithPlayer = false;
-            if (debugMode) Debug.Log($"Enemy {name} no longer in contact with player");
         }
     }
     
@@ -87,7 +81,6 @@ public class EnemyDamageDealer : MonoBehaviour
         if (IsPlayerObject(other.gameObject))
         {
             inContactWithPlayer = false;
-            if (debugMode) Debug.Log($"Enemy {name} no longer in contact with player");
         }
     }
     
@@ -122,15 +115,6 @@ public class EnemyDamageDealer : MonoBehaviour
                 {
                     playerHealth = obj.GetComponent<PlayerHealth>();
                 }
-                
-                if (playerHealth == null)
-                {
-                    Debug.LogWarning($"Enemy {name} could not find PlayerHealth component!");
-                }
-                else if (debugMode)
-                {
-                    Debug.Log($"Enemy {name} found PlayerHealth component");
-                }
             }
         }
     }
@@ -144,11 +128,6 @@ public class EnemyDamageDealer : MonoBehaviour
         // Apply damage to player
         playerHealth.TakeDamage(damageAmount);
         
-        if (debugMode)
-        {
-            Debug.Log($"Enemy {name} dealt {damageAmount} damage to player");
-        }
-        
         // Start cooldown coroutine
         StartCoroutine(DamageCooldown());
     }
@@ -158,10 +137,5 @@ public class EnemyDamageDealer : MonoBehaviour
     {
         yield return new WaitForSeconds(damageCooldown);
         canDealDamage = true;
-        
-        if (debugMode && inContactWithPlayer)
-        {
-            Debug.Log($"Enemy {name} cooldown finished, can deal damage again");
-        }
     }
 }

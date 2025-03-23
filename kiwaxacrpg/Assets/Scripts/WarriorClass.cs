@@ -60,13 +60,11 @@ public class WarriorClass : PlayerController
             if (childCamera != null)
             {
                 cameraTransform = childCamera.transform;
-                Debug.Log("Camera found as child of player");
             }
             else
             {
                 // Try to find main camera
                 cameraTransform = Camera.main.transform;
-                Debug.Log("Using main camera for player view");
             }
         }
         
@@ -75,7 +73,6 @@ public class WarriorClass : PlayerController
         {
             // Detach from player
             cameraTransform.parent = null;
-            Debug.Log("Detached camera from player for fixed follow mode");
         }
         
         // Set initial camera position and rotation
@@ -121,7 +118,6 @@ public class WarriorClass : PlayerController
     {
         // Example of ability initialization - in a real game these might be loaded dynamically
         // or created from ScriptableObjects for better flexibility
-        Debug.Log("Loading warrior abilities...");
         
         // This is just a placeholder - in a real implementation you'd add actual ability objects
         // warriorAbilities.Add(new CleavingStrike(this));
@@ -196,8 +192,6 @@ public class WarriorClass : PlayerController
     // Perform basic melee attack
     private void PerformMeleeAttack()
     {
-        Debug.Log("Warrior performs melee attack!");
-        
         // Start attack cooldown
         attackCooldownTimer = attackCooldown;
         
@@ -235,8 +229,6 @@ public class WarriorClass : PlayerController
                 float maxFury = GetStat("MaxFury");
                 currentFury = Mathf.Min(currentFury + 10f, maxFury);
                 SetStat("CurrentFury", currentFury);
-                
-                Debug.Log($"Hit enemy for {finalDamage} damage! Current fury: {currentFury}");
             }
         }
         
@@ -253,8 +245,6 @@ public class WarriorClass : PlayerController
             // Destroy after duration
             Destroy(effect, attackEffectDuration);
         }
-        
-        // Here you would also trigger attack animation, sound effects, etc.
     }
     
     // Use a specific warrior ability
@@ -276,17 +266,7 @@ public class WarriorClass : PlayerController
                 
                 // Consume resource
                 SetStat(resourceType, GetStat(resourceType) - resourceCost);
-                
-                Debug.Log($"Used warrior ability: {ability.GetAbilityName()}");
             }
-            else
-            {
-                Debug.Log($"Not enough {resourceType} to use ability!");
-            }
-        }
-        else
-        {
-            Debug.LogWarning($"Ability at index {abilityIndex} does not exist!");
         }
     }
 }

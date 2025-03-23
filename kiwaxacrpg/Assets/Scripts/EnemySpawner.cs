@@ -108,7 +108,7 @@ public class EnemySpawner : MonoBehaviour
         // Add to our list of spawned enemies
         spawnedEnemies.Add(enemy);
         
-        Debug.Log($"Spawned enemy at position: {spawnPosition}. Total enemies: {spawnedEnemies.Count}");
+
     }
     
     // Get a spawn position outside the camera view

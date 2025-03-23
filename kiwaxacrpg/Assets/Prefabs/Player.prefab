@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 1733487752335640586}
   - component: {fileID: 5057221036683436021}
   - component: {fileID: 5481162840816437467}
+  - component: {fileID: 7367761951535660410}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -185,12 +186,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e76da904c9e10b04d8bce826d16ff203, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHealth: 500
   invincibilityTime: 0
   invincibilityEffect: {fileID: 0}
   damageSound: {fileID: 8300000, guid: b6a0e6bb85ef9b146a16ab5862c26fc0, type: 3}
-  healthBarImage: {fileID: 0}
-  healthText: {fileID: 0}
+--- !u!114 &7367761951535660410
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 723371970997005100}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 41aedf1146a29e449bf3d28e3f712e8b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &4336412140290509604
 GameObject:
   m_ObjectHideFlags: 0
