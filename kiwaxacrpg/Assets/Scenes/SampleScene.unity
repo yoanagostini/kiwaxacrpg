@@ -557,7 +557,7 @@ MonoBehaviour:
   emptySlotColor: {r: 0.3, g: 0.3, b: 0.3, a: 0.5}
   filledSlotColor: {r: 0.8, g: 0.8, b: 0.8, a: 0.8}
   emptyIconAlpha: 0.4
-  slotIndex: 0
+  slotIndex: 1
   isEquipSlot: 1
 --- !u!114 &109796622
 MonoBehaviour:
@@ -751,7 +751,7 @@ MonoBehaviour:
   emptySlotColor: {r: 0.3, g: 0.3, b: 0.3, a: 0.5}
   filledSlotColor: {r: 0.8, g: 0.8, b: 0.8, a: 0.8}
   emptyIconAlpha: 0.4
-  slotIndex: 0
+  slotIndex: 5
   isEquipSlot: 1
 --- !u!114 &284974950
 MonoBehaviour:
@@ -1353,16 +1353,16 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 939034649}
-  - {fileID: 109796620}
-  - {fileID: 284974948}
-  - {fileID: 803770293}
-  - {fileID: 1891123030}
   - {fileID: 2028847495}
-  - {fileID: 1901715029}
-  - {fileID: 1396808152}
+  - {fileID: 109796620}
+  - {fileID: 939034649}
+  - {fileID: 1891123030}
+  - {fileID: 803770293}
+  - {fileID: 284974948}
   - {fileID: 2034117747}
   - {fileID: 1427866838}
+  - {fileID: 1396808152}
+  - {fileID: 1901715029}
   m_Father: {fileID: 876859694}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0.5}
@@ -2317,7 +2317,7 @@ MonoBehaviour:
   emptySlotColor: {r: 0.3, g: 0.3, b: 0.3, a: 0.5}
   filledSlotColor: {r: 0.8, g: 0.8, b: 0.8, a: 0.8}
   emptyIconAlpha: 0.4
-  slotIndex: 0
+  slotIndex: 4
   isEquipSlot: 1
 --- !u!114 &803770295
 MonoBehaviour:
@@ -2596,15 +2596,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   inventorySlotsParent: {fileID: 627275140}
-  equipmentSlotsParent: {fileID: 0}
-  inventorySlotPrefab: {fileID: 0}
-  selectedItemName: {fileID: 0}
-  selectedItemDescription: {fileID: 0}
-  itemStatsPanel: {fileID: 0}
-  itemStatPrefab: {fileID: 0}
-  equipButton: {fileID: 0}
-  useButton: {fileID: 0}
-  dropButton: {fileID: 0}
+  equipmentSlotsParent: {fileID: 508288466}
+  inventorySlotPrefab: {fileID: 8758914509611501306, guid: 595107898fb9c5547848461465a112a7, type: 3}
+  selectedItemName: {fileID: 1525553023}
+  selectedItemDescription: {fileID: 772821809}
+  itemStatsPanel: {fileID: 1770086247}
+  itemStatPrefab: {fileID: 8127322238806028080, guid: a6de85cb5db01224ca4f5f3502b99aef, type: 3}
+  equipButton: {fileID: 563716921}
+  useButton: {fileID: 988788544}
+  dropButton: {fileID: 902566430}
   toggleInventoryKey: 105
   startVisible: 0
 --- !u!1 &878356686
@@ -2817,7 +2817,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &914523917
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2938,7 +2938,7 @@ MonoBehaviour:
   emptySlotColor: {r: 0.3, g: 0.3, b: 0.3, a: 0.5}
   filledSlotColor: {r: 0.8, g: 0.8, b: 0.8, a: 0.8}
   emptyIconAlpha: 0.4
-  slotIndex: 0
+  slotIndex: 2
   isEquipSlot: 1
 --- !u!114 &939034651
 MonoBehaviour:
@@ -4161,7 +4161,7 @@ MonoBehaviour:
   emptySlotColor: {r: 0.3, g: 0.3, b: 0.3, a: 0.5}
   filledSlotColor: {r: 0.8, g: 0.8, b: 0.8, a: 0.8}
   emptyIconAlpha: 0.4
-  slotIndex: 0
+  slotIndex: 8
   isEquipSlot: 1
 --- !u!114 &1396808154
 MonoBehaviour:
@@ -4430,7 +4430,7 @@ MonoBehaviour:
   emptySlotColor: {r: 0.3, g: 0.3, b: 0.3, a: 0.5}
   filledSlotColor: {r: 0.8, g: 0.8, b: 0.8, a: 0.8}
   emptyIconAlpha: 0.4
-  slotIndex: 0
+  slotIndex: 7
   isEquipSlot: 1
 --- !u!114 &1427866840
 MonoBehaviour:
@@ -5390,7 +5390,7 @@ MonoBehaviour:
   emptySlotColor: {r: 0.3, g: 0.3, b: 0.3, a: 0.5}
   filledSlotColor: {r: 0.8, g: 0.8, b: 0.8, a: 0.8}
   emptyIconAlpha: 0.4
-  slotIndex: 0
+  slotIndex: 3
   isEquipSlot: 1
 --- !u!114 &1891123032
 MonoBehaviour:
@@ -5487,7 +5487,7 @@ MonoBehaviour:
   emptySlotColor: {r: 0.3, g: 0.3, b: 0.3, a: 0.5}
   filledSlotColor: {r: 0.8, g: 0.8, b: 0.8, a: 0.8}
   emptyIconAlpha: 0.4
-  slotIndex: 0
+  slotIndex: 9
   isEquipSlot: 1
 --- !u!114 &1901715031
 MonoBehaviour:
@@ -6207,7 +6207,7 @@ MonoBehaviour:
   emptySlotColor: {r: 0.3, g: 0.3, b: 0.3, a: 0.5}
   filledSlotColor: {r: 0.8, g: 0.8, b: 0.8, a: 0.8}
   emptyIconAlpha: 0.4
-  slotIndex: 0
+  slotIndex: 6
   isEquipSlot: 1
 --- !u!114 &2034117749
 MonoBehaviour:
@@ -6277,7 +6277,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   inventorySize: 30
-  equipSlotCount: 4
+  equipSlotCount: 10
 --- !u!4 &2063654160
 Transform:
   m_ObjectHideFlags: 0

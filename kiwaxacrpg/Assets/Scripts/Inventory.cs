@@ -2,6 +2,21 @@ using UnityEngine;
 using System.Collections.Generic;
 using System;
 
+// Enum for different equipment slot types
+public enum EquipmentSlotType
+{
+    Weapon,
+    Chest, // Armor
+    Helmet,
+    Gloves,
+    Boots,
+    Belt,
+    Ring1,
+    Ring2,
+    Amulet,
+    OffHand
+}
+
 /// <summary>
 /// Main inventory system that stores and manages the player's items
 /// </summary>
@@ -30,6 +45,29 @@ public class Inventory : MonoBehaviour
     
     // Dictionary to track slots by item for quick lookup
     private Dictionary<Item, int> itemSlotMap = new Dictionary<Item, int>();
+    
+    // Maps item types to valid equipment slot types
+    private static readonly Dictionary<ItemType, List<EquipmentSlotType>> validSlotsByItemType = new Dictionary<ItemType, List<EquipmentSlotType>>
+    {
+        { ItemType.Weapon, new List<EquipmentSlotType> { EquipmentSlotType.Weapon, EquipmentSlotType.OffHand } },
+        { ItemType.Armor, new List<EquipmentSlotType> { EquipmentSlotType.Chest, EquipmentSlotType.Helmet, EquipmentSlotType.Gloves, EquipmentSlotType.Boots, EquipmentSlotType.Belt } },
+        { ItemType.Accessory, new List<EquipmentSlotType> { EquipmentSlotType.Ring1, EquipmentSlotType.Ring2, EquipmentSlotType.Amulet } }
+    };
+
+    // Maps equipment slot types to indices in the equippedItems array
+    private static readonly Dictionary<EquipmentSlotType, int> slotTypeToIndex = new Dictionary<EquipmentSlotType, int>
+    {
+        { EquipmentSlotType.Weapon, 0 },
+        { EquipmentSlotType.Chest, 1 },
+        { EquipmentSlotType.Helmet, 2 },
+        { EquipmentSlotType.Gloves, 3 },
+        { EquipmentSlotType.Boots, 4 },
+        { EquipmentSlotType.Belt, 5 },
+        { EquipmentSlotType.Ring1, 6 },
+        { EquipmentSlotType.Ring2, 7 },
+        { EquipmentSlotType.Amulet, 8 },
+        { EquipmentSlotType.OffHand, 9 }
+    };
     
     // Initialize the inventory
     private void Awake()
@@ -166,48 +204,24 @@ public class Inventory : MonoBehaviour
     }
     
     /// <summary>
-    /// Equip an item from the inventory
+    /// Equip an item to a specific equipment slot
     /// </summary>
     /// <param name="item">The item to equip</param>
-    /// <param name="slotIndex">The equipment slot to use (optional)</param>
+    /// <param name="slotType">The specific equipment slot to use</param>
     /// <returns>True if equipped successfully</returns>
-    public bool EquipItem(Item item, int slotIndex = -1)
+    public bool EquipItem(Item item, EquipmentSlotType slotType)
     {
         if (item == null) return false;
         
-        // Determine the appropriate equipment slot based on item type
-        if (slotIndex < 0)
+        // Check if this item type can be equipped in this slot type
+        if (!CanEquipItemInSlot(item, slotType))
         {
-            // Auto-assign slot based on item type
-            switch (item.type)
-            {
-                case ItemType.Weapon:
-                    slotIndex = 0; // Weapon slot
-                    break;
-                case ItemType.Armor:
-                    slotIndex = 1; // Armor slot
-                    break;
-                case ItemType.Accessory:
-                    // Find the first empty accessory slot (2 or 3)
-                    if (equippedItems[2] == null)
-                        slotIndex = 2;
-                    else if (equippedItems[3] == null)
-                        slotIndex = 3;
-                    else
-                        slotIndex = 2; // Replace first accessory if both are full
-                    break;
-                default:
-                    Debug.LogWarning($"Cannot equip item of type {item.type}: {item.itemName}");
-                    return false;
-            }
-        }
-        
-        // Validate slot index
-        if (slotIndex < 0 || slotIndex >= equipSlotCount)
-        {
-            Debug.LogError($"Invalid equipment slot index: {slotIndex}");
+            Debug.LogWarning($"Cannot equip {item.itemName} in {slotType} slot");
             return false;
         }
+        
+        // Get the index for this slot type
+        int slotIndex = slotTypeToIndex[slotType];
         
         // If there's already an item in this slot, unequip it first
         if (equippedItems[slotIndex] != null)
@@ -225,13 +239,63 @@ public class Inventory : MonoBehaviour
         // Equip the item
         equippedItems[slotIndex] = item;
         
-        Debug.Log($"Equipped {item.itemName} in slot {slotIndex}");
+        Debug.Log($"Equipped {item.itemName} in {slotType} slot (index {slotIndex})");
         
         // Notify listeners that equipment has changed
         if (OnEquipmentChanged != null)
             OnEquipmentChanged.Invoke();
         
         return true;
+    }
+    
+    /// <summary>
+    /// Equip an item from the inventory
+    /// </summary>
+    /// <param name="item">The item to equip</param>
+    /// <param name="slotIndex">The equipment slot index to use (optional)</param>
+    /// <returns>True if equipped successfully</returns>
+    public bool EquipItem(Item item, int slotIndex = -1)
+    {
+        if (item == null) return false;
+        
+        // If a specific slot index is provided, use it directly
+        if (slotIndex >= 0 && slotIndex < equipSlotCount)
+        {
+            // If there's already an item in this slot, unequip it first
+            if (equippedItems[slotIndex] != null)
+            {
+                UnequipItem(slotIndex);
+            }
+            
+            // Remove the item from inventory first
+            if (!RemoveItem(item))
+            {
+                Debug.LogWarning($"Could not remove item from inventory to equip: {item.itemName}");
+                return false;
+            }
+            
+            // Equip the item
+            equippedItems[slotIndex] = item;
+            
+            Debug.Log($"Equipped {item.itemName} in slot {slotIndex}");
+            
+            // Notify listeners that equipment has changed
+            if (OnEquipmentChanged != null)
+                OnEquipmentChanged.Invoke();
+            
+            return true;
+        }
+        
+        // Auto-assign slot based on item type
+        EquipmentSlotType? slotType = GetDefaultSlotForItem(item);
+        
+        if (slotType.HasValue)
+        {
+            return EquipItem(item, slotType.Value);
+        }
+        
+        Debug.LogWarning($"Cannot find appropriate slot for {item.itemName} of type {item.type}");
+        return false;
     }
     
     /// <summary>
@@ -275,6 +339,18 @@ public class Inventory : MonoBehaviour
             OnEquipmentChanged.Invoke();
         
         return true;
+    }
+    
+    /// <summary>
+    /// Unequip an item from a specific equipment slot type
+    /// </summary>
+    /// <param name="slotType">The equipment slot type to unequip</param>
+    /// <returns>True if unequipped successfully</returns>
+    public bool UnequipItem(EquipmentSlotType slotType)
+    {
+        // Convert slot type to index
+        int slotIndex = slotTypeToIndex[slotType];
+        return UnequipItem(slotIndex);
     }
     
     /// <summary>
@@ -411,6 +487,17 @@ public class Inventory : MonoBehaviour
     }
     
     /// <summary>
+    /// Get equipped item in a specific slot type
+    /// </summary>
+    /// <param name="slotType">The equipment slot type to check</param>
+    /// <returns>The equipped item, or null if empty</returns>
+    public Item GetEquippedItemInSlot(EquipmentSlotType slotType)
+    {
+        int slotIndex = slotTypeToIndex[slotType];
+        return GetEquippedItemAt(slotIndex);
+    }
+    
+    /// <summary>
     /// Get the count of items in the inventory (non-empty slots)
     /// </summary>
     /// <returns>Number of items in inventory</returns>
@@ -454,5 +541,80 @@ public class Inventory : MonoBehaviour
 
         // Notify listeners that inventory has changed
         OnInventoryChanged?.Invoke();
+    }
+    
+    /// <summary>
+    /// Check if an item can be equipped in a specific slot
+    /// </summary>
+    /// <param name="item">The item to check</param>
+    /// <param name="slotType">The slot type to check</param>
+    /// <returns>True if the item can be equipped in the slot</returns>
+    private bool CanEquipItemInSlot(Item item, EquipmentSlotType slotType)
+    {
+        // Check if this item type can go in this slot type
+        if (validSlotsByItemType.ContainsKey(item.type))
+        {
+            return validSlotsByItemType[item.type].Contains(slotType);
+        }
+        return false;
+    }
+
+    /// <summary>
+    /// Get the default slot type for an item based on its type
+    /// </summary>
+    /// <param name="item">The item to check</param>
+    /// <returns>The default slot type, or null if none found</returns>
+    private EquipmentSlotType? GetDefaultSlotForItem(Item item)
+    {
+        if (validSlotsByItemType.ContainsKey(item.type))
+        {
+            List<EquipmentSlotType> validSlots = validSlotsByItemType[item.type];
+            
+            if (validSlots.Count > 0)
+            {
+                // Check each valid slot to find the first empty one
+                foreach (EquipmentSlotType slotType in validSlots)
+                {
+                    int index = slotTypeToIndex[slotType];
+                    if (equippedItems[index] == null)
+                    {
+                        return slotType;
+                    }
+                }
+                
+                // If no empty slot, return the first valid slot
+                return validSlots[0];
+            }
+        }
+        
+        return null;
+    }
+
+    /// <summary>
+    /// Get the slot type for a given slot index
+    /// </summary>
+    /// <param name="slotIndex">Index in the equippedItems array</param>
+    /// <returns>The corresponding slot type</returns>
+    public EquipmentSlotType GetSlotTypeFromIndex(int slotIndex)
+    {
+        foreach (var pair in slotTypeToIndex)
+        {
+            if (pair.Value == slotIndex)
+            {
+                return pair.Key;
+            }
+        }
+        
+        throw new System.ArgumentException($"No slot type found for index {slotIndex}");
+    }
+    
+    /// <summary>
+    /// Get the slot index for a given equipment slot type
+    /// </summary>
+    /// <param name="slotType">The equipment slot type</param>
+    /// <returns>The corresponding index in the equippedItems array</returns>
+    public int GetSlotIndexFromType(EquipmentSlotType slotType)
+    {
+        return slotTypeToIndex[slotType];
     }
 }
