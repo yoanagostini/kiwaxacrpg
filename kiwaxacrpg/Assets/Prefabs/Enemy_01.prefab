@@ -15,7 +15,6 @@ GameObject:
   - component: {fileID: 3514871943507266712}
   - component: {fileID: 4693393685719199204}
   - component: {fileID: 3316814394142708306}
-  - component: {fileID: 3794410732389133724}
   m_Layer: 6
   m_Name: Enemy_01
   m_TagString: Enemy
@@ -174,24 +173,3 @@ MonoBehaviour:
   requireHitboxTag: 1
   hitboxTag: PlayerHitbox
   debugMode: 1
---- !u!114 &3794410732389133724
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3494861276724385949}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d10ce5bcf9732ef4a82d1b079168f4b8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  dropChance: 1
-  minDrops: 1
-  maxDrops: 1
-  dropRadius: 1
-  dropHeight: 0.5
-  commonWeight: 100
-  rareWeight: 20
-  legendaryWeight: 8
-  uniqueWeight: 2

@@ -27,9 +27,6 @@ public class BasicEnemy : EnemyBase
     // Reference to the enemy's Rigidbody component
     private Rigidbody rb;
     
-    // Reference to drop system component
-    private EnemyDropSystem dropSystem;
-    
     // Start is called before the first frame update
     void Start()
     {
@@ -42,15 +39,6 @@ public class BasicEnemy : EnemyBase
         
         // Get the Rigidbody component
         rb = GetComponent<Rigidbody>();
-        
-        // Get the drop system component
-        dropSystem = GetComponent<EnemyDropSystem>();
-        
-        // If no drop system, add one with default values
-        if (dropSystem == null)
-        {
-            dropSystem = gameObject.AddComponent<EnemyDropSystem>();
-        }
         
         // Initialize health
         currentHealth = maxHealth;
@@ -120,13 +108,7 @@ public class BasicEnemy : EnemyBase
     
     // Handle enemy death
     private void Die()
-    {
-        // Drop loot if we have a drop system
-        if (dropSystem != null)
-        {
-            dropSystem.DropLoot(transform.position);
-        }
-        
+    {      
         // Here you could spawn particles, play sound effects, etc.
         
         // Destroy the enemy GameObject

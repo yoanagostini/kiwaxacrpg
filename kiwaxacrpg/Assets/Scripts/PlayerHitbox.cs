@@ -26,7 +26,7 @@ public class PlayerHitbox : MonoBehaviour
         // Make sure this object has the correct tag
         if (!gameObject.CompareTag("PlayerHitbox"))
         {
-            Debug.LogWarning("PlayerHitbox object should have the 'PlayerHitbox' tag! Adding it now.");
+            //Debug.LogWarning("PlayerHitbox object should have the 'PlayerHitbox' tag! Adding it now.");
             gameObject.tag = "PlayerHitbox";
         }
     }
